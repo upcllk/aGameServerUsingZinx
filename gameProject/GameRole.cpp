@@ -110,7 +110,7 @@ bool GameRole::Init()
 UserData* GameRole::ProcMsg(UserData& _poUserData)
 {
     // test
-    GET_REF2DATA(MultiMsg, input, _poUserData);
+    GET_REF2DATA(MultiMsg, input, _poUserData); 
     for (auto single : input.m_Msgs) {
         std::cout << "type is " << single->getMsgType() << std::endl;
         std::cout << single->getMsg()->Utf8DebugString() << std::endl;
