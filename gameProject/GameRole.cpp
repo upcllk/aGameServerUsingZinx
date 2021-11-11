@@ -11,7 +11,7 @@ GameRole::GameRole()
 {
     m_szName = "Klee";
     m_x = 100;
-    m_y = 100;
+    m_z = 100;
 }
 
 GameRole::~GameRole()
@@ -59,8 +59,8 @@ GameMsg* GameRole::SendSelfPos()
     pMsg->set_tp(2);
     auto pPosition = pMsg->mutable_p();
     pPosition->set_x(m_x);
-    pPosition->set_y(m_z);
-    pPosition->set_z(m_y);
+    pPosition->set_y(m_y);
+    pPosition->set_z(m_z);
     pPosition->set_v(m_v);
 
     GameMsg* pret = new GameMsg(GameMsg::MSG_TYPE_BROADCAST, pMsg);
@@ -69,7 +69,6 @@ GameMsg* GameRole::SendSelfPos()
 
 GameMsg* GameRole::CreateIDNameLogoff()
 {
-    return GameRole::CreateIDNameLogin();
     pb::SyncPid* pmsg = new pb::SyncPid();
     pmsg->set_pid(m_iPid);
     pmsg->set_username(m_szName);

@@ -64,6 +64,7 @@ int main()
         cout << dynamic_cast<myPlayer*>(single)->name << endl;
     }
     */
+    
 
     ZinxKernel::ZinxKernelInit();
     // 添加监听通道
