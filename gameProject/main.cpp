@@ -4,6 +4,8 @@
 #include "msg.pb.h"
 #include <string>
 #include "AOIWorld.h"
+#include "ZinxTimer.h"
+#include "RandomName.h"
 
 using namespace std;
 
@@ -27,6 +29,8 @@ public:
         return y;
     }
 };
+
+extern RandomName random_name;
 
 int main()
 {
@@ -64,11 +68,11 @@ int main()
         cout << dynamic_cast<myPlayer*>(single)->name << endl;
     }
     */
-    
-
+    random_name.LoadFile();
     ZinxKernel::ZinxKernelInit();
     // 添加监听通道
     ZinxKernel::Zinx_Add_Channel(*(new ZinxTCPListen(8899, new GenConnFact())));
+    ZinxKernel::Zinx_Add_Channel(*(new ZinxTimerChannel()));
     ZinxKernel::Zinx_Run();
 
     ZinxKernel::ZinxKernelFini();

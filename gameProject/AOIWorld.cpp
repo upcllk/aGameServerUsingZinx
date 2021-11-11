@@ -33,7 +33,6 @@ std::list<Player*> AOIWorld::GetSrdPlayers(Player* _player)
     // 别忘了自己的格子
     // 这里类型用引用的话可能会出错，因为后面会重复为这个变量赋值
     std::list<Player*> cur_list = m_grids[grid_id].m_players;
-    std::cout << cur_list.size() << std::endl;
     ret.insert(ret.end(), cur_list.begin(), cur_list.end());
 
     if (y_index > 0) {

@@ -5,21 +5,26 @@
 #include "GameChannel.h"
 #include <algorithm>
 #include <random>
+#include "ZinxTimer.h"
+#include "RandomName.h"
 
 // 创建游戏世界全局对象
 static AOIWorld world(0, 400, 0, 400, 20, 20);
 
 static std::default_random_engine random_engine(time(NULL));
 
+RandomName random_name;
+
 GameRole::GameRole()
 {
-    m_szName = "Klee";
+    m_szName = random_name.GetName();
     m_x = 100 + random_engine() % 50;
     m_z = 100 + random_engine() % 50;
 }
 
 GameRole::~GameRole()
 {
+    random_name.ReleaseName(this->m_szName);
 }
 
 GameMsg* GameRole::CreateIDNameLogin()
@@ -183,8 +188,29 @@ void GameRole::ViewLost(GameRole* _pRole)
     ZinxKernel::Zinx_SendOut(*pMsg, *(_pRole->m_pProto));
 }
 
+
+class ExitTimer :
+    public TimerOutProc {
+    // 通过 TimerOutProc 继承
+    virtual void Proc() override
+    {
+        ZinxKernel::Zinx_Exit();
+    }
+    virtual int GetTimeSec() override
+    {
+        return 20;
+    }
+};
+
+static ExitTimer g_exit_timer;
+
 bool GameRole::Init()
 {
+    if (ZinxKernel::Zinx_GetAllRole().size() == 0) {
+        // 并非每次都要起关定时器
+        TimeOutMng::GetInstance()->DelTask(&g_exit_timer);
+    }
+
     // 设置玩家 ID 为当前连接的 fd
     m_iPid = this->m_pProto->getChannel()->GetFd();
 
@@ -250,6 +276,12 @@ void GameRole::Fini()
         ZinxKernel::Zinx_SendOut(*pMsg, *(pRole->m_pProto));
     }
     world.DelPlayer(this);
+
+    // 判断是否是最后一个玩家 -> 起定时器
+    if (ZinxKernel::Zinx_GetAllRole().size() == 1) {
+        // 退出定时器， 20 秒没有新连接退出
+        TimeOutMng::GetInstance()->AddTask(&g_exit_timer);
+    }
 }
 
 void GameRole::setProtocol(GameProtocol* _pProtocol)
