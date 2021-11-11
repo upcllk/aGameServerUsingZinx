@@ -71,4 +71,13 @@ MultiMsg::MultiMsg()
 
 MultiMsg::~MultiMsg()
 {
+	// 这边不写析构会有内存泄漏(为啥视频里的没有)
+	// std::list<GameMsg*> m_Msgs;
+	while (!m_Msgs.empty()) {
+		GameMsg* tmp = *m_Msgs.begin();
+		m_Msgs.remove(tmp);
+		if (tmp != nullptr) {
+			delete tmp;
+		}
+	}
 }
