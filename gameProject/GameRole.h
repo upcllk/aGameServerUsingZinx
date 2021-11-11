@@ -21,9 +21,16 @@ private:
     int m_iPid = 0;
     std::string m_szName;
     GameMsg* CreateIDNameLogin();
-    GameMsg* GetSrdPlayers();
-    GameMsg* SendSelfPos();
+    GameMsg* CreateSrdPlayers();
+    GameMsg* CreateSelfPos();
     GameMsg* CreateIDNameLogoff();
+    GameMsg* CreateTalkBroadCast(std::string _content);
+
+    void ProcTalkMsg(std::string _content);
+    void ProcMoveMsg(int x, int y, int z, int v);
+    
+    void ViewAppear(GameRole* _pRole);
+    void ViewLost(GameRole* _pRole);
 
 public:
     // Í¨¹ý Irole ¼Ì³Ð

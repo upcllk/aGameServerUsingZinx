@@ -23,6 +23,8 @@ private:
     google::protobuf::Message * m_pMsg = nullptr;
 
 public:
+    GameMsg();
+    ~GameMsg();
     // 已知消息内容，创建消息对象
     GameMsg(MSG_TYPE _type, google::protobuf::Message* _pMsg);
     // 字节流也可由转化为 protobuf 消息结构
@@ -37,6 +39,8 @@ class MultiMsg
     :public UserData
 {
 public:
+    MultiMsg();
+    ~MultiMsg();
     std::list<GameMsg*> m_Msgs;
 };
 

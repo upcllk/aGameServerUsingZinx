@@ -1,5 +1,16 @@
 #include "GameMsg.h"
 
+GameMsg::GameMsg()
+{
+}
+
+GameMsg::~GameMsg()
+{
+	if (m_pMsg != nullptr) {
+		delete m_pMsg;
+	}
+}
+
 GameMsg::GameMsg(MSG_TYPE _type, google::protobuf::Message* _pMsg)
 	:m_enMsgType(_type), m_pMsg(_pMsg)
 {
@@ -52,4 +63,12 @@ std::string GameMsg::serialize()
 int GameMsg::getMsgType()
 {
 	return m_enMsgType;
+}
+
+MultiMsg::MultiMsg()
+{
+}
+
+MultiMsg::~MultiMsg()
+{
 }
