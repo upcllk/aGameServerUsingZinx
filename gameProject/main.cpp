@@ -57,6 +57,29 @@ void daemonlize() {
         dup2(nullfd, STDERR_FILENO);
         close(nullfd);
     }
+
+    //设置进程监控
+    while (1)
+    {
+        pid = fork();
+        if (pid < 0) {
+            exit(-1);
+        }
+
+        // 父进程等子进程退出
+        if (pid > 0) {
+            int status = 0;
+            wait(&status);
+            if (status == 0) {
+                // 正常退出(定时器)
+                exit(0);
+            }
+        }
+        // 子进程跳出循环执行游戏业务
+        else {
+            break;
+        }
+    }
 }
 
 
