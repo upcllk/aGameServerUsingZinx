@@ -7,6 +7,7 @@
 #include <random>
 #include "ZinxTimer.h"
 #include "RandomName.h"
+#include <fstream>
 
 // 创建游戏世界全局对象
 static AOIWorld world(0, 400, 0, 400, 20, 20);
@@ -236,6 +237,10 @@ bool GameRole::Init()
             ZinxKernel::Zinx_SendOut(*pmsg, *(pRole->m_pProto));
         }
     }
+    // 记录当前姓名到文件
+    std::ofstream name_recode("/tmp/name_record", std::ios::app);
+    name_recode << m_szName << std::endl; 
+
     return bRet;
 }
 
@@ -284,6 +289,21 @@ void GameRole::Fini()
         std::cout << "起定时器" << std::endl;
         TimeOutMng::GetInstance()->AddTask(&g_exit_timer);
     }
+
+    // 从文件中删掉当前姓名
+    std::list<std::string> cur_name_list;
+    std::ifstream istream("/tmp/name_record");
+    std::string tmp;
+    while ((getline(istream, tmp))) {
+        cur_name_list.push_back(tmp);
+    }
+    std::ofstream ostream("/tmp/name_record");
+    for (auto name : cur_name_list) {
+        if (name != m_szName) {
+            ostream << name << std::endl;
+        }
+    }
+
 }
 
 void GameRole::setProtocol(GameProtocol* _pProtocol)
