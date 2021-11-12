@@ -100,6 +100,7 @@
     <ClInclude Include="ZinxTimer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="makefile" />
     <None Include="msg.proto" />
   </ItemGroup>
   <ItemGroup>
