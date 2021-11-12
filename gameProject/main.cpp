@@ -32,6 +32,34 @@ public:
 
 extern RandomName random_name;
 
+void daemonlize() {
+    /*
+    1、fork
+    2、父进程退出
+    3、子进程设置回话 ID
+    4、子进程设置指向路径
+    5、子进程重定向三个文件描述符
+    */
+    int pid = fork();
+    if (pid < 0) {
+        exit(-1);
+    }
+    if (pid > 0) {
+        // 父进程退出
+        exit(0);
+    }
+    setsid();
+    // 默认当前路径
+    int nullfd = open("/dev/null", O_RDWR);
+    if (nullfd >= 0) {
+        dup2(nullfd, STDIN_FILENO);
+        dup2(nullfd, STDOUT_FILENO);
+        dup2(nullfd, STDERR_FILENO);
+        close(nullfd);
+    }
+}
+
+
 int main()
 {
     /*
@@ -68,6 +96,7 @@ int main()
         cout << dynamic_cast<myPlayer*>(single)->name << endl;
     }
     */
+    daemonlize();
     random_name.LoadFile();
     ZinxKernel::ZinxKernelInit();
     // 添加监听通道

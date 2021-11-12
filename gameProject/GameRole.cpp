@@ -1,4 +1,4 @@
-#include "GameRole.h"
+ï»¿#include "GameRole.h"
 #include "AOIWorld.h"
 #include "GameMsg.h"
 #include "msg.pb.h"
@@ -8,7 +8,7 @@
 #include "ZinxTimer.h"
 #include "RandomName.h"
 
-// ´´½¨ÓÎÏ·ÊÀ½çÈ«¾Ö¶ÔÏó
+// åˆ›å»ºæ¸¸æˆä¸–ç•Œå…¨å±€å¯¹è±¡
 static AOIWorld world(0, 400, 0, 400, 20, 20);
 
 static std::default_random_engine random_engine(time(NULL));
@@ -48,7 +48,7 @@ GameMsg* GameRole::CreateSrdPlayers()
         auto pRole = dynamic_cast<GameRole*>(single);   
         pPlayer->set_pid(pRole->m_iPid);
         pPlayer->set_username(pRole->m_szName);
-        // ÉèÖÃ×ÓÏûÏ¢µÄ×ÓÏûÏ¢
+        // è®¾ç½®å­æ¶ˆæ¯çš„å­æ¶ˆæ¯
         auto pPosition = pPlayer->mutable_p();
         pPosition->set_x(pRole->m_x);
         pPosition->set_y(pRole->m_y);
@@ -64,7 +64,7 @@ GameMsg* GameRole::CreateSelfPos()
     pb::BroadCast* pMsg = new pb::BroadCast();
     pMsg->set_pid(m_iPid);
     pMsg->set_username(m_szName);
-    // ¿Í»§¶Ë¹æ¶¨£¬ 2 Îª Pos ÏûÏ¢£¬ 1 Îª Content ÏûÏ¢
+    // å®¢æˆ·ç«¯è§„å®šï¼Œ 2 ä¸º Pos æ¶ˆæ¯ï¼Œ 1 ä¸º Content æ¶ˆæ¯
     pMsg->set_tp(2);
     auto pPosition = pMsg->mutable_p();
     pPosition->set_x(m_x);
@@ -90,7 +90,7 @@ GameMsg* GameRole::CreateTalkBroadCast(std::string _content)
     pb::BroadCast* pmsg = new pb::BroadCast();
     pmsg->set_pid(m_iPid);
     pmsg->set_username(m_szName);
-    // ¿Í»§¶Ë¹æ¶¨£¬ 2 Îª Pos ÏûÏ¢£¬ 1 Îª Content ÏûÏ¢
+    // å®¢æˆ·ç«¯è§„å®šï¼Œ 2 ä¸º Pos æ¶ˆæ¯ï¼Œ 1 ä¸º Content æ¶ˆæ¯
     pmsg->set_tp(1);
     pmsg->set_content(_content);
 
@@ -112,12 +112,12 @@ void GameRole::ProcTalkMsg(std::string _content)
 void GameRole::ProcMoveMsg(int _x, int _y, int _z, int _v)
 {
     /*
-    1¡¢¿çÍø¸ñ´¦Àí
-    2¡¢¹ã²¥ĞÂÎ»ÖÃ¸øÖÜÎ§Íæ¼Ò
+    1ã€è·¨ç½‘æ ¼å¤„ç†
+    2ã€å¹¿æ’­æ–°ä½ç½®ç»™å‘¨å›´ç©å®¶
     */
-    // »ñÈ¡Ô­À´µÄÁÚ¾Ó s1
+    // è·å–åŸæ¥çš„é‚»å±… s1
     auto srd_list_pre = world.GetSrdPlayers(this);
-    // Õª³ı¾É¸ñ×Ó, ¸üĞÂ×ø±ê£¬»ñÈ¡ĞÂÁÚ¾Ó s2£¬Ìí¼ÓĞÂ¸ñ×ÓÍê³É¿ÉÄÜµÄ¸ñ×Ó¸üĞÂ
+    // æ‘˜é™¤æ—§æ ¼å­, æ›´æ–°åæ ‡ï¼Œè·å–æ–°é‚»å±… s2ï¼Œæ·»åŠ æ–°æ ¼å­å®Œæˆå¯èƒ½çš„æ ¼å­æ›´æ–°
     world.DelPlayer(this);
     m_x = _x;
     m_y = _y;
@@ -125,27 +125,27 @@ void GameRole::ProcMoveMsg(int _x, int _y, int _z, int _v)
     m_v = _v;
     world.AddPlayer(this);
     auto srd_list_cur = world.GetSrdPlayers(this);
-    // ±éÀú s2£¬ ÈôÔªËØ²»ÊôÓÚ s1£¬ ÊÓÒ°³öÏÖ
+    // éå† s2ï¼Œ è‹¥å…ƒç´ ä¸å±äº s1ï¼Œ è§†é‡å‡ºç°
     for (auto single_player : srd_list_cur) {
         if (find(srd_list_pre.begin(), srd_list_pre.end(), single_player) == srd_list_pre.end()) {
-            // ÊÓÒ°³öÏÖ
+            // è§†é‡å‡ºç°
             ViewAppear(dynamic_cast<GameRole*> (single_player));
         }
     }
 
-    // ±éÀú s1£¬ ÈôÔªËØ²»ÊôÓÚ s2£¬ ÊÓÒ°ÏûÊ§
+    // éå† s1ï¼Œ è‹¥å…ƒç´ ä¸å±äº s2ï¼Œ è§†é‡æ¶ˆå¤±
     for (auto single_player : srd_list_pre) {
         if (find(srd_list_cur.begin(), srd_list_cur.end(), single_player) == srd_list_cur.end()) {
-            // ÊÓÒ°ÏûÊ§
+            // è§†é‡æ¶ˆå¤±
             ViewLost(dynamic_cast<GameRole*> (single_player));
         }
     }
 
     auto srd_list = world.GetSrdPlayers(this);
 
-    // ÏòÖÜÎ§Íæ¼Ò¹ã²¥¸üĞÂÏûÏ¢
+    // å‘å‘¨å›´ç©å®¶å¹¿æ’­æ›´æ–°æ¶ˆæ¯
     for (auto singleRole : srd_list) {
-        // ´´½¨´ı·¢ËÍÏûÏ¢
+        // åˆ›å»ºå¾…å‘é€æ¶ˆæ¯
         pb::BroadCast* pMsg = new pb::BroadCast();
         pMsg->set_pid(this->m_iPid);
         pMsg->set_username(this->m_szName);
@@ -156,11 +156,11 @@ void GameRole::ProcMoveMsg(int _x, int _y, int _z, int _v)
         pPos->set_v(_v);
         pMsg->set_tp(4);
         GameMsg* gameMsg = new GameMsg(GameMsg::MSG_TYPE_BROADCAST, pMsg);
-        // Õâ¸ö gameMsg Ó¦¸Ã²»»á±ä»¯µ«ÊÇ·ÅÔÚÑ­»·ÍâÃæ¾Í²»ÄÜÍ¬²½ĞÂÎ»ÖÃĞÅÏ¢ÉõÖÁ¶Î´íÎó
-        // ÉÏÃæµÄÁÄÌì msg Ò²ÊÇÕâÑù ¶Ñ¶ÔÏó £¿
+        // è¿™ä¸ª gameMsg åº”è¯¥ä¸ä¼šå˜åŒ–ä½†æ˜¯æ”¾åœ¨å¾ªç¯å¤–é¢å°±ä¸èƒ½åŒæ­¥æ–°ä½ç½®ä¿¡æ¯ç”šè‡³æ®µé”™è¯¯
+        // ä¸Šé¢çš„èŠå¤© msg ä¹Ÿæ˜¯è¿™æ · å †å¯¹è±¡ ï¼Ÿ
         auto pRole = dynamic_cast<GameRole*> (singleRole);
         /*
-        //ÏòÍâ·¢ËÍÊı¾İ£¬½«²ÎÊı1( ¶Ñ ¶Ô Ïó)Ö¸¶¨µÄÓÃ»§Êı¾İÍ¨¹ı²ÎÊı2Ö¸¶¨µÄĞ­Òé¶ÔÏó·¢³ö
+        //å‘å¤–å‘é€æ•°æ®ï¼Œå°†å‚æ•°1( å † å¯¹ è±¡)æŒ‡å®šçš„ç”¨æˆ·æ•°æ®é€šè¿‡å‚æ•°2æŒ‡å®šçš„åè®®å¯¹è±¡å‘å‡º
         static void Zinx_SendOut(UserData & _oUserData, Iprotocol & _oProto);
         */
         ZinxKernel::Zinx_SendOut(*gameMsg, *(pRole->m_pProto));
@@ -169,10 +169,10 @@ void GameRole::ProcMoveMsg(int _x, int _y, int _z, int _v)
 
 void GameRole::ViewAppear(GameRole* _pRole)
 {
-    // _pRole Ïò this ·¢ 200 ÏûÏ¢
+    // _pRole å‘ this å‘ 200 æ¶ˆæ¯
     auto pMsg = _pRole->CreateSelfPos();
     ZinxKernel::Zinx_SendOut(*pMsg, *m_pProto);
-    // this Ïò _pRole ·¢ 200 ÏûÏ¢
+    // this å‘ _pRole å‘ 200 æ¶ˆæ¯
     pMsg = this->CreateSelfPos();
     ZinxKernel::Zinx_SendOut(*pMsg, *(_pRole->m_pProto));
 
@@ -180,10 +180,10 @@ void GameRole::ViewAppear(GameRole* _pRole)
 
 void GameRole::ViewLost(GameRole* _pRole)
 {
-    // _pRole Ïò this ·¢ 200 ÏûÏ¢
+    // _pRole å‘ this å‘ 200 æ¶ˆæ¯
     auto pMsg = _pRole->CreateIDNameLogoff();
     ZinxKernel::Zinx_SendOut(*pMsg, *m_pProto);
-    // this Ïò _pRole ·¢ 200 ÏûÏ¢
+    // this å‘ _pRole å‘ 200 æ¶ˆæ¯
     pMsg = this->CreateIDNameLogoff();
     ZinxKernel::Zinx_SendOut(*pMsg, *(_pRole->m_pProto));
 }
@@ -191,7 +191,7 @@ void GameRole::ViewLost(GameRole* _pRole)
 
 class ExitTimer :
     public TimerOutProc {
-    // Í¨¹ı TimerOutProc ¼Ì³Ğ
+    // é€šè¿‡ TimerOutProc ç»§æ‰¿
     virtual void Proc() override
     {
         ZinxKernel::Zinx_Exit();
@@ -207,38 +207,39 @@ static ExitTimer g_exit_timer;
 bool GameRole::Init()
 {
     if (ZinxKernel::Zinx_GetAllRole().size() == 0) {
-        // ²¢·ÇÃ¿´Î¶¼ÒªÆğ¹Ø¶¨Ê±Æ÷
+        // å¹¶éæ¯æ¬¡éƒ½è¦èµ·å…³å®šæ—¶å™¨
+        std::cout << "å…³é—­å®šæ—¶å™¨" << std::endl;
         TimeOutMng::GetInstance()->DelTask(&g_exit_timer);
     }
 
-    // ÉèÖÃÍæ¼Ò ID Îªµ±Ç°Á¬½ÓµÄ fd
+    // è®¾ç½®ç©å®¶ ID ä¸ºå½“å‰è¿æ¥çš„ fd
     m_iPid = this->m_pProto->getChannel()->GetFd();
 
     bool bRet = false;
-    // Ìí¼ÓÍæ¼Ò£¨×Ô¼º£©µ½ÓÎÏ·ÊÀ½ç
+    // æ·»åŠ ç©å®¶ï¼ˆè‡ªå·±ï¼‰åˆ°æ¸¸æˆä¸–ç•Œ
     bRet = world.AddPlayer(this);
     if (bRet == true) {
-        // ·¢ËÍ ID ºÍÃû³Æ
+        // å‘é€ ID å’Œåç§°
         auto pmsg = CreateIDNameLogin();
         // std::cout << pmsg->getMsg()->Utf8DebugString() << std::endl;
         ZinxKernel::Zinx_SendOut(*pmsg, *(this->m_pProto));
         pmsg = CreateSrdPlayers();
         // std::cout << pmsg->getMsg()->Utf8DebugString() << std::endl;
         ZinxKernel::Zinx_SendOut(*pmsg, *(this->m_pProto));
-        // ÏòÖÜÎ§Íæ¼Ò·¢ËÍ×Ô¼ºµÄÎ»ÖÃ
+        // å‘å‘¨å›´ç©å®¶å‘é€è‡ªå·±çš„ä½ç½®
         auto srd_list = world.GetSrdPlayers(this);
         // std::cout << "in Init : srd_list.size() = " << srd_list.size() << std::endl;
         for (auto single : srd_list) {
             pmsg = CreateSelfPos();
             auto pRole = dynamic_cast<GameRole*> (single);
-            // ·¢¸øÆäËûÍæ¼ÒµÄĞ­Òé²ã
+            // å‘ç»™å…¶ä»–ç©å®¶çš„åè®®å±‚
             ZinxKernel::Zinx_SendOut(*pmsg, *(pRole->m_pProto));
         }
     }
     return bRet;
 }
 
-// ´¦ÀíÏà¹ØÓÃ»§ÇëÇó
+// å¤„ç†ç›¸å…³ç”¨æˆ·è¯·æ±‚
 UserData* GameRole::ProcMsg(UserData& _poUserData)
 {
     // test
@@ -252,7 +253,7 @@ UserData* GameRole::ProcMsg(UserData& _poUserData)
             ProcTalkMsg((dynamic_cast<pb::Talk*> (single->getMsg()))->content());
             break;
         case GameMsg::MSG_TYPE_NEW_POSITION: {
-            // ÕâÀï²»¼Ó {} ÏŞ¶¨×÷ÓÃÓò»á±¨´í jumo to case label , »òÕß newPos ÔÚÍâÃæ¶¨Òå
+            // è¿™é‡Œä¸åŠ  {} é™å®šä½œç”¨åŸŸä¼šæŠ¥é”™ jumo to case label , æˆ–è€… newPos åœ¨å¤–é¢å®šä¹‰
             pb::Position* newPos = dynamic_cast<pb::Position*> (single->getMsg());
             ProcMoveMsg(newPos->x(), newPos->y(), newPos->z(), newPos->v());
         }
@@ -267,19 +268,20 @@ UserData* GameRole::ProcMsg(UserData& _poUserData)
 
 void GameRole::Fini()
 {
-    // ÏòÖÜÎ§Íæ¼Ò·¢ËÍÏÂÏßÏûÏ¢
+    // å‘å‘¨å›´ç©å®¶å‘é€ä¸‹çº¿æ¶ˆæ¯
     auto srd_list = world.GetSrdPlayers(this);
     for (auto single : srd_list) {
         auto pMsg = CreateIDNameLogoff();
         auto pRole = dynamic_cast<GameRole*> (single);
-        // ·¢¸øÆäËûÍæ¼ÒµÄĞ­Òé²ã`
+        // å‘ç»™å…¶ä»–ç©å®¶çš„åè®®å±‚`
         ZinxKernel::Zinx_SendOut(*pMsg, *(pRole->m_pProto));
     }
     world.DelPlayer(this);
 
-    // ÅĞ¶ÏÊÇ·ñÊÇ×îºóÒ»¸öÍæ¼Ò -> Æğ¶¨Ê±Æ÷
-    if (ZinxKernel::Zinx_GetAllRole().size() == 1) {
-        // ÍË³ö¶¨Ê±Æ÷£¬ 20 ÃëÃ»ÓĞĞÂÁ¬½ÓÍË³ö
+    // åˆ¤æ–­æ˜¯å¦æ˜¯æœ€åä¸€ä¸ªç©å®¶ -> èµ·å®šæ—¶å™¨
+    if (ZinxKernel::Zinx_GetAllRole().size() == 0) {
+        // é€€å‡ºå®šæ—¶å™¨ï¼Œ 20 ç§’æ²¡æœ‰æ–°è¿æ¥é€€å‡º
+        std::cout << "èµ·å®šæ—¶å™¨" << std::endl;
         TimeOutMng::GetInstance()->AddTask(&g_exit_timer);
     }
 }
