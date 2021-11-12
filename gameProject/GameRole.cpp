@@ -8,7 +8,8 @@
 #include "ZinxTimer.h"
 #include "RandomName.h"
 #include <fstream>
-
+#include <hiredis/hiredis.h>
+    
 // 创建游戏世界全局对象
 static AOIWorld world(0, 400, 0, 400, 20, 20);
 
@@ -237,9 +238,25 @@ bool GameRole::Init()
             ZinxKernel::Zinx_SendOut(*pmsg, *(pRole->m_pProto));
         }
     }
-    // 记录当前姓名到文件
-    std::ofstream name_recode("/tmp/name_record", std::ios::app);
-    name_recode << m_szName << std::endl; 
+    //// 记录当前姓名到文件
+    //std::ofstream name_recode("/tmp/name_record", std::ios::app);
+    //name_recode << m_szName << std::endl; 
+
+    redisContext* context = redisConnect("127.0.0.1", 6379);
+    if (context != nullptr) {
+        redisReply* reply = (redisReply*)redisCommand(context, "lpush game_name %s", m_szName.c_str());
+        if (reply == nullptr) {
+            std::cout << "error : " << context->errstr << std::endl;
+            /* Connection refused --> 不是防火墙问题也不是配置文件问题
+            * redisConnect 的时候不要传 192.168.153.131, 就传 127.0.0.1 
+            * 最终程序是跑在 linux
+            * 终端输入 redis-cli 显示的也是 127.0.0.1:6379> 
+            */
+            return bRet;
+        }
+        freeReplyObject(reply);
+        redisFree(context);
+    }
 
     return bRet;
 }
@@ -290,20 +307,25 @@ void GameRole::Fini()
         TimeOutMng::GetInstance()->AddTask(&g_exit_timer);
     }
 
-    // 从文件中删掉当前姓名
-    std::list<std::string> cur_name_list;
-    std::ifstream istream("/tmp/name_record");
-    std::string tmp;
-    while ((getline(istream, tmp))) {
-        cur_name_list.push_back(tmp);
+    //// 从文件中删掉当前姓名
+    //std::list<std::string> cur_name_list;
+    //std::ifstream istream("/tmp/name_record");
+    //std::string tmp;
+    //while ((getline(istream, tmp))) {
+    //    cur_name_list.push_back(tmp);
+    //}
+    //std::ofstream ostream("/tmp/name_record");
+    //for (auto name : cur_name_list) {
+    //    if (name != m_szName) {
+    //        ostream << name << std::endl;
+    //    }
+    //}
+    
+    redisContext* context = redisConnect("127.0.0.1", 6379);
+    if (context != nullptr) {
+        freeReplyObject(redisCommand(context, "lrem game_name 1 %s", m_szName.c_str()));
+        redisFree(context);
     }
-    std::ofstream ostream("/tmp/name_record");
-    for (auto name : cur_name_list) {
-        if (name != m_szName) {
-            ostream << name << std::endl;
-        }
-    }
-
 }
 
 void GameRole::setProtocol(GameProtocol* _pProtocol)

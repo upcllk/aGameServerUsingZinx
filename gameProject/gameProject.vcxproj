@@ -76,6 +76,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>D:\filesForCpp\zinx\zinx-master;$(IncludePath)</IncludePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="AOIWorld.cpp" />
@@ -111,7 +112,7 @@
       <AdditionalOptions>-pthread</AdditionalOptions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>zinx;protobuf;pthread</LibraryDependencies>
+      <LibraryDependencies>zinx;protobuf;pthread;hiredis</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
